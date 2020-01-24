@@ -52,10 +52,9 @@ class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
                     print('0', end=' ')
             print()
 
-        print("row sum - target row sum error =")
-        print(np.linalg.norm(row_sum-self.__row_sum))
-        print("col sum - target col sum error =")
-        print(np.linalg.norm(col_sum-self.__col_sum))
+        print()
+        print("row sum error = {}".format(np.linalg.norm(row_sum-self.__row_sum)))
+        print("col sum error = {}".format(np.linalg.norm(col_sum-self.__col_sum)))
     
          
         if self.__solution_count > 0:
