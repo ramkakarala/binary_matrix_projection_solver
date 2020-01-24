@@ -19,7 +19,7 @@ import numpy as np
 
 
 class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
-    """Print intermediate solutions."""
+    """Print solutions."""
 
     def __init__(self, matrix, row_sum, col_sum):
         cp_model.CpSolverSolutionCallback.__init__(self)
@@ -62,10 +62,6 @@ class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
             self.StopSearch()
 
 def main(row_sum,col_sum):
-    #print('column sum')
-    #print(col_sum)
-    #print('row sum')
-    #print(row_sum)
 
     print("{} {}".format(row_sum.size,col_sum.size))
     
@@ -101,14 +97,14 @@ def main(row_sum,col_sum):
     print('  - solutions found : %i' % solution_printer.solution_count())
 
 
-# By default, solve the 8x8 problem.
+# set up the matrix
 matrix_size = 32
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         matrix_size = int(sys.argv[1])
     board = np.random.random((matrix_size,matrix_size)) < np.random.random(1)[0]
-    #print(board)
+    # compute projection
     rsum = np.sum(board,0)
     csum = np.sum(board,1)
     main(rsum,csum)
