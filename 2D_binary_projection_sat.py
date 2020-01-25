@@ -16,6 +16,7 @@ import time
 import sys
 from ortools.sat.python import cp_model
 import numpy as np
+import bin_matrix_utils as bu
 
 
 class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
@@ -62,8 +63,6 @@ class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
 
 def main(row_sum,col_sum):
 
-    print("{} {}".format(row_sum.size,col_sum.size))
-    
     # Creates the solver.
     model = cp_model.CpModel()
     # Creates the variables of binary matrix
@@ -95,7 +94,6 @@ def main(row_sum,col_sum):
     print('  - wall time       : %f s' % solver.WallTime())
     print('  - solutions found : %i' % solution_printer.solution_count())
 
-
 # set up the matrix
 matrix_size = 32
 
@@ -106,4 +104,16 @@ if __name__ == '__main__':
     # compute projection
     rsum = np.sum(board,0)
     csum = np.sum(board,1)
-    main(rsum,csum)
+    
+    # check if there's a solution even possible, and if so, find it!
+    # in the case where rsum and csum come from real matrix, we know
+    # test must pass!
+    
+    if bu.check_X_star_dominates_Y(X=csum,Y=rsum) and \
+        bu.check_X_star_dominates_Y(X=rsum,Y=csum):
+            print("Dominance test passed--solution must exist!")
+            # solve!
+            main(rsum,csum)
+
+    else:
+        print("Dominance test FAILED! -- no solution")
