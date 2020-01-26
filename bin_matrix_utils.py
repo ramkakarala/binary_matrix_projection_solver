@@ -44,6 +44,17 @@ def check_X2_star_dominates_Y2(X2,Y2):
         
     return dominates
 
+# check all 3 projections to see if a cube exists
+def check_cube_projections(axis0sum,axis1sum,axis2sum):
+    
+    passes = False
+    if check_X2_star_dominates_Y2(X2=axis2sum,Y2=axis1sum) and \
+        check_X2_star_dominates_Y2(X2=axis0sum,Y2=axis2sum.T) and \
+            check_X2_star_dominates_Y2(X2=axis0sum.T,Y2=axis1sum.T):
+           passes = True
+    
+    return passes
+
 #unit test for check_X_dominates_Y
 def test_check_X_star_dominates_Y():
     A = np.random.randint(0,2,(5,10))
@@ -70,9 +81,7 @@ def test_check_X2_star_dominates_Y2():
     ysum = np.sum(A,axis=1) # sum along y, as function of x and z
     xsum = np.sum(A,axis=2) # sum along x, as function oy y and z
 
-    if check_X2_star_dominates_Y2(X2=xsum,Y2=ysum) and \
-        check_X2_star_dominates_Y2(X2=zsum,Y2=xsum.T) and \
-            check_X2_star_dominates_Y2(X2=zsum.T,Y2=ysum.T):
+    if check_cube_projections(axis0sum=zsum,axis1sum=ysum,axis2sum=xsum):
         print("Dominates test for actual binary cube passed!")
     else:
         print("Dominates test for actual binary cube FAILED!")
