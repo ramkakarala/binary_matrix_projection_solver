@@ -10,6 +10,15 @@ A collection of utilities for binary matrices.
 
 import numpy as np
 
+# a Ferrers matrix is binary with all ones in upper left corner,
+# and with decreasing sum along rows
+def ferrers(X,Y):
+    F = np.zeros((X.size,np.amax(X)),dtype=int)
+    for k in range(X.size):
+        F[k,0:X[k]]=1
+
+    return F
+
 #According to Gale-Ryser theorem, there a matrix 
 #with sum of columns "csum" and sum of rows "rsum"
 #iff rsum* dominates csum.
@@ -20,12 +29,17 @@ def check_X_star_dominates_Y(X,Y):
     # sort them
     X_s = -np.sort(-X) # descending order
     Y_s = -np.sort(-Y)
-    F = np.zeros((X.size,Y.size),dtype=int)
-    for k in range(X_s.size):
-        F[k,0:X_s[k]] = 1
-
+    F = ferrers(X_s,Y_s)
+    
     X_star = np.sum(F,axis=0)
     dominates = False
+    if X_star.size > Y_s.size:
+        # pad Y_S
+        Y_s = np.pad(Y_s,(0,X_star.size-Y_s.size),'constant',constant_values=(0))
+    elif Y_s.size > X_star.size:
+        # pad X_star
+        X_star = np.pad(X_star,(0,Y_s.size-X_star.size),'constant',constant_values=(0))
+      
     if np.all(np.cumsum(X_star)>=np.cumsum(Y_s)):
         dominates=True
     return dominates
