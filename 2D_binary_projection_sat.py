@@ -61,7 +61,7 @@ class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
         if self.__solution_count > 0:
             self.StopSearch()
 
-def main(row_sum,col_sum):
+def solve(row_sum,col_sum):
 
     # Creates the solver.
     model = cp_model.CpModel()
@@ -117,7 +117,7 @@ if __name__ == '__main__':
             
             # solve!
             print("A solution must exist, solving....")
-            main(rsum,csum)
+            solve(rsum,csum)
 
     else:
         print("Dominance test FAILED! -- no solution")

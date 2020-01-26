@@ -85,7 +85,7 @@ class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
         if self.__solution_count > 0:
             self.StopSearch()
 
-def main(x_sum,y_sum,z_sum):
+def solve(x_sum,y_sum,z_sum):
   
     N = x_sum.shape[0] # assume a cube
      
@@ -168,6 +168,6 @@ if __name__ == '__main__':
               
               # solve!
               print("A solution must exist, solving...")
-              main(x_sum,y_sum,z_sum)
+              solve(x_sum,y_sum,z_sum)
     else:
         print("Dominance test failed: No solution exists!")
