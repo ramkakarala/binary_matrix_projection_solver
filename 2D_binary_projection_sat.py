@@ -94,25 +94,29 @@ def main(row_sum,col_sum):
     print('  - wall time       : %f s' % solver.WallTime())
     print('  - solutions found : %i' % solution_printer.solution_count())
 
-# set up the matrix
-matrix_size = 32
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         matrix_size = int(sys.argv[1])
+    else:
+        #set up the matrix
+        matrix_size = 32
+    
+    # generate a random matrix
     board = np.random.random((matrix_size,matrix_size)) < np.random.random(1)[0]
-    # compute projection
+   
+    # compute projections
     rsum = np.sum(board,0)
     csum = np.sum(board,1)
     
     # check if there's a solution even possible, and if so, find it!
     # in the case where rsum and csum come from real matrix, we know
     # test must pass!
-    
     if bu.check_X_star_dominates_Y(X=csum,Y=rsum) and \
         bu.check_X_star_dominates_Y(X=rsum,Y=csum):
-            print("Dominance test passed--solution must exist!")
+            
             # solve!
+            print("A solution must exist, solving....")
             main(rsum,csum)
 
     else:

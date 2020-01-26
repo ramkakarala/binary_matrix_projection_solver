@@ -17,6 +17,8 @@ import time
 import sys
 from ortools.sat.python import cp_model
 import numpy as np
+import bin_matrix_utils as bu
+from matplotlib import pyplot as plt
 
 
 class BinaryProjectionSolutionPrinter(cp_model.CpSolverSolutionCallback):
@@ -127,18 +129,45 @@ def main(x_sum,y_sum,z_sum):
     print('  - solutions found : %i' % solution_printer.solution_count())
 
 
-# default cube size. 
-# For N=2, over determined
-# For N=3, exactly determined
-# for N>=4, under determined
-N = 6
-
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         N = int(sys.argv[1])
+    else:
+        # default cube size. 
+        # For N=2, over determined
+        # For N=3, exactly determined
+        # for N>=4, under determined
+        N = 6
+    
+    # create a random binary cube
     matrix = np.random.random((N,N,N)) < np.random.random(None)
+    
     # compute projections
     x_sum = np.sum(matrix,0)
     y_sum = np.sum(matrix,1)
     z_sum = np.sum(matrix,2)
-    main(x_sum,y_sum,z_sum)
+    
+    # show them as images
+    plt.figure()
+    plt.subplot(131)
+    plt.imshow(x_sum)
+    plt.title('x sum')
+    plt.subplot(132)
+    plt.imshow(y_sum)
+    plt.title('y sum')
+    plt.subplot(133)
+    plt.imshow(z_sum)
+    plt.title('z sum')
+ 
+  
+    # we know that any real cube must pass the Gale-Ryser domination
+    # conditions, test it here
+    if bu.check_X2_star_dominates_Y2(X2=y_sum,Y2=z_sum) and \
+        bu.check_X2_star_dominates_Y2(X2=x_sum,Y2=z_sum.T) and \
+          bu.check_X2_star_dominates_Y2(X2=x_sum.T,Y2=y_sum.T):
+              
+              # solve!
+              print("A solution must exist, solving...")
+              main(x_sum,y_sum,z_sum)
+    else:
+        print("Dominance test failed: No solution exists!")
